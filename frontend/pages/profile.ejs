@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOCIAL APP</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon_logo.png" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs') %>
+
+    <main>
+      <%- include('./partials/userInfo.ejs') %>
+
+      <br />
+      <hr />
+      <br />
+      <div class="new-timeline-button-container">
+        <% if (isOwnProfile) { %>
+        <button id="new-timeline-button">New Timeline</button>
+        <% } %>
+      </div>
+      <% if (timelinesData[0].length>0) { %>
+      <section class="timeline-select-container">
+        <% timelinesData[0].forEach(timeline => { %>
+        <a href="/timeline/<%= timeline.timeline_id %>">
+          <div class="timeline-item"><%= timeline.title %></div>
+        </a>
+        <% }); %>
+      </section>
+      <% } else { %>
+      <p>No timelines found.</p>
+      <% } %>
+
+      <div class="modal" id="new-timeline-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="close-new-timeline-modal" class="close">&times;</span>
+            <h2>Add New Timeline</h2>
+          </div>
+          <br />
+          <form
+            id="new-timeline-form"
+            action="/timeline/createtimeline"
+            method="POST"
+          >
+            <label for="new-timeline-name">Timeline name:</label>
+            <input type="text" id="new-timeline-name" name="title" required />
+            <br />
+            <label for="new-timeline-private-toggle">Private timeline:</label>
+            <select id="new-timeline-private-toggle" name="isPrivate">
+              <option value="false">No</option>
+              <option value="true">Yes</option></select
+            ><br /><br />
+
+            <button class="modal-submit-button">Add Timeline</button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <script src="/js/navDropdown.js"></script>
+    <script src="/js/newTimelineModal.js"></script>
+    <script src="/js/changeAvatarModal.js"></script>
+    <script src="/js/editProfileModal.js"></script>
+    <script>
+      window.addEventListener("click", (event) => {
+        if (event.target == document.querySelector("#new-timeline-modal")) {
+          document.querySelector("#new-timeline-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#change-avatar-modal")
+        ) {
+          document.querySelector("#change-avatar-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#edit-profile-modal")
+        ) {
+          document.querySelector("#edit-profile-modal").style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

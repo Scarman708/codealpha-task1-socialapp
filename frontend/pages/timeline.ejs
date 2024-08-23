@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOCIAL APP</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon_logo.png" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs') %>
+
+    <main>
+      <%- include('./partials/userInfo.ejs') %>
+
+      <br />
+      <hr />
+      <br />
+
+      <section class="memories-container">
+        <div class="current-timeline-container">
+          <% if(timelineStyles[0][0].is_private == 1) {%>
+          <div class="timeline-info">
+            <p class="current-timeline-name">
+              Now in timeline: <%= timelineStyles[0][0].title %> (Private)
+            </p>
+            <p class="timeline-visits-count">
+              <%=timelineVisitsCount %> Visits
+            </p>
+          </div>
+          <% }else { %>
+          <div class="timeline-info">
+            <p class="current-timeline-name">
+              Now in timeline: <%= timelineStyles[0][0].title %>
+            </p>
+            <p class="timeline-visits-count">
+              <%=timelineVisitsCount %> Visits
+            </p>
+          </div>
+          <%}%> <% if(isOwnProfile) {%>
+          <div class="timeline-crud-buttons">
+            <button id="new-memory-button">New Memory</button>
+            <button id="remove-timeline-button">Delete Timeline</button>
+            <button id="edit-timeline-button">Edit Timeline</button>
+          </div>
+          <% }%>
+        </div>
+        <% if(timelineStyles[0][0].is_private && !isOwnProfile) {%>
+
+        <p>You cannot view this private timeline</p>
+
+        <%} else {%> <% if (memories[0].length > 0) { %>
+        <div class="memories-select-container">
+          <% memories[0].forEach(memory => { %>
+          <a href="/memory/<%=memory.memory_id %>">
+            <div
+              class="memory-item"
+              style="
+                background-image: url('data:image/png;base64, <%= memory.picture %>');
+              "
+            ></div>
+          </a>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <p>No memories found for this timeline.</p>
+        <% } %> <%}%>
+      </section>
+
+      <div class="modal" id="remove-timeline-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="close-remove-timeline-modal" class="close">&times;</span>
+            <h2>Remove Timeline</h2>
+          </div>
+          <br />
+          <br />
+          <form action="/timeline/deletetimeline" method="POST">
+            <h4 style="text-align: center">
+              Are you sure you want to delete this timeline?
+            </h4>
+            <input
+              hidden
+              type="text"
+              name="timelineId"
+              value="<%= timelineId %>"
+            />
+            <input
+              hidden
+              type="text"
+              name="userId"
+              value="<%= user[0].user_id %>"
+            />
+            <br />
+            <br />
+            <div class="confirmation buttons-container">
+              <button id="yes-confirmation-button" class="modal-submit-button">
+                Confirm
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal" id="new-memory-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="close-new-memory-modal" class="close">&times;</span>
+            <h2>Add New Memory</h2>
+          </div>
+          <br />
+          <form
+            id="new-memory-form"
+            action="/memory/creatememory"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <label for="new-memory-picture">Upload your picture:</label>
+            <input
+              type="file"
+              accept="image/*"
+              id="new-memory-picture"
+              name="picture"
+              required
+            />
+            <br />
+            <label for="new-memory-description">Description: </label>
+            <input type="text" id="new-memory-description" name="description" />
+            <input
+              hidden
+              type="text"
+              name="timelineId"
+              value="<%= timelineId %>"
+            />
+            <br /><br />
+
+            <button
+              class="add-memory-modal-button modal-submit-button"
+              id="add-memory-modal-button"
+            >
+              Add Memory
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal" id="edit-timeline-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="close-edit-timeline-modal" class="close">&times;</span>
+            <h2>Edit Timeline</h2>
+          </div>
+          <br />
+          <form
+            id="edit-timeline-form"
+            action="/timeline/edittimeline"
+            method="POST"
+          >
+            <label for="edit-timeline-title">Timeline name: </label>
+            <input
+              type="text"
+              id="edit-timeline-title"
+              name="title"
+              placeholder="<%=timelineStyles[0][0].title%>"
+            />
+            <br />
+
+            <label for="edit-timeline-privacy">Private timeline: </label>
+            <select name="isPrivate" id="edit-timeline-privacy">
+              <option value="false">No</option>
+              <option value="true">Yes</option>
+            </select>
+
+            <br />
+            <label for="edit-timeline-font">Timeline font: </label>
+            <select name="textFont" id="edit-timeline-font">
+              <option value="arial" style="font-family: arial">
+                Default (Arial)
+              </option>
+              <option value="cursive" style="font-family: cursive">
+                Cursive
+              </option>
+              <option value="Courier New" style="font-family: Courier New">
+                Courier New
+              </option>
+              <option value="verdana" style="font-family: verdana">
+                Verdana
+              </option>
+              <option value="tahoma" style="font-family: tahoma">Tahoma</option>
+              <option
+                value="Times New Roman"
+                style="font-family: Times New Roman"
+              >
+                Times New Roman
+              </option>
+              <option
+                value="Brush Script MT"
+                style="font-family: Brush Script MT"
+              >
+                Brush Script MT
+              </option>
+            </select>
+            <br />
+            <label for="edit-timeline-background-color">Timeline color: </label>
+            <select name="bgColor" id="edit-timeline-background-color">
+              <option value="white">Default (White)</option>
+              <option value="orange">Orange</option>
+              <option value="teal">Teal</option>
+              <option value="gray">Gray</option>
+              <option value="darkred">Dark Red</option>
+              <option value="mediumpurple">Purple</option>
+              <option value="beige">Beige</option>
+              <option value="mediumaquamarine">Light Green</option>
+              <option value="skyblue">Light Blue</option>
+            </select>
+
+            <input
+              hidden
+              type="text"
+              name="timelineId"
+              value="<%= timelineId %>"
+            />
+            <br /><br />
+
+            <button
+              class="edit-timeline-modal-button modal-submit-button"
+              id="edit-timeline-modal-button"
+            >
+              Edit Timeline
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <script src="/js/navDropdown.js"></script>
+    <script src="/js/removeTimelineModal.js"></script>
+    <script src="/js/newMemoryModal.js"></script>
+    <script src="/js/editTimelineModal.js"></script>
+    <script src="/js/adjustEditTimelineModalValues.js"></script>
+    <script src="/js/changeAvatarModal.js"></script>
+    <script src="/js/editProfileModal.js"></script>
+    <script>
+      const main = document.querySelector("main");
+      const memoriesContainer = document.querySelector(".memories-container");
+      const bgColor = "<%= timelineStyles[0][0].bg_color %>";
+      const text_font = "<%= timelineStyles[0][0].text_font %>";
+      main.style.backgroundColor = bgColor;
+      memoriesContainer.style.fontFamily = text_font;
+      const privateStatus = "<%= timelineStyles[0][0].is_private %>";
+
+      window.addEventListener("click", (event) => {
+        if (event.target == document.querySelector("#new-memory-modal")) {
+          document.querySelector("#new-memory-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#edit-timeline-modal")
+        ) {
+          document.querySelector("#edit-timeline-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#remove-timeline-modal")
+        ) {
+          document.querySelector("#remove-timeline-modal").style.display =
+            "none";
+        } else if (
+          event.target == document.querySelector("#change-avatar-modal")
+        ) {
+          document.querySelector("#change-avatar-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#edit-profile-modal")
+        ) {
+          document.querySelector("#edit-profile-modal").style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

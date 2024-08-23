@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOCIAL APP</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon_logo.png" />
+    <style></style>
+  </head>
+  <body>
+    <%- include('./partials/header.ejs') %>
+
+    <main>
+      <%- include('./partials/userInfo.ejs') %>
+
+      <br />
+      <hr />
+      <br />
+
+      <section class="memories-container">
+        <% if(isOwnProfile) {%>
+        <div class="current-memory-container">
+          <button id="remove-memory-button">Delete Memory</button>
+          <button id="edit-memory-button">Edit Memory</button>
+        </div>
+        <%}%> <% if(timelineStyles[0][0].is_private && !isOwnProfile){%>
+        <div class="memory">This memory is from a private timeline</div>
+        <%} else {%>
+
+        <div class="memory">
+          <img
+            src="data:image/png;base64, <%= memory[0][0].picture %>"
+            alt=""
+          />
+          <div class="memory-description">
+            <%=memory[0][0].memory_description%>
+          </div>
+          <div class="memory-dates">
+            <p>Created at: <%=memory[0][0].memory_created_at %></p>
+            <p>Edited at: <%=memory[0][0].memory_last_edit_at %></p>
+          </div>
+        </div>
+        <%}%>
+      </section>
+
+      <div class="modal" id="remove-memory-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="close-remove-memory-modal" class="close">&times;</span>
+            <h2>Remove Memory</h2>
+          </div>
+          <br />
+          <br />
+          <form action="/memory/deletememory" method="POST">
+            <h4 style="text-align: center">
+              Are you sure you want to remove this memory?
+            </h4>
+            <input
+              hidden
+              type="text"
+              name="memoryId"
+              value="<%= memory[0][0].memory_id %>"
+            />
+            <input
+              hidden
+              type="text"
+              name="timelineId"
+              value="<%= memory[0][0].timeline_id %>"
+            />
+            <br />
+            <br />
+            <div class="confirmation buttons-container">
+              <button id="yes-confirmation-button" class="modal-submit-button">
+                Confirm
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="modal" id="edit-memory-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span id="close-edit-memory-modal" class="close">&times;</span>
+            <h2>Edit Memory</h2>
+          </div>
+          <br />
+          <form id="edit-memory-form" action="/memory/editmemory" method="POST">
+            <label for="edit-memory-description">Memory description: </label>
+            <input
+              type="text"
+              id="edit-memory-description"
+              name="description"
+              required
+            />
+            <input
+              hidden
+              type="text"
+              name="memoryId"
+              value="<%= memory[0][0].memory_id %>"
+            />
+            <br />
+            <br />
+
+            <button
+              class="edit-memory-modal-button modal-submit-button"
+              id="edit-memory-modal-button"
+            >
+              Edit Memory
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <script src="/js/navDropdown.js"></script>
+    <script src="/js/editMemoryModal.js"></script>
+    <script src="/js/removeMemoryModal.js"></script>
+    <script src="/js/changeAvatarModal.js"></script>
+    <script src="/js/editProfileModal.js"></script>
+    <script>
+      const main = document.querySelector("main");
+      const memoriesContainer = document.querySelector(".memories-container");
+      const bgColor = "<%= timelineStyles[0][0].bg_color %>";
+      const text_font = "<%= timelineStyles[0][0].text_font %>";
+      main.style.backgroundColor = bgColor;
+      memoriesContainer.style.fontFamily = text_font;
+
+      window.addEventListener("click", (event) => {
+        if (event.target == document.querySelector("#edit-memory-modal")) {
+          document.querySelector("#edit-memory-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#remove-memory-modal")
+        ) {
+          document.querySelector("#remove-memory-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#change-avatar-modal")
+        ) {
+          document.querySelector("#change-avatar-modal").style.display = "none";
+        } else if (
+          event.target == document.querySelector("#edit-profile-modal")
+        ) {
+          document.querySelector("#edit-profile-modal").style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

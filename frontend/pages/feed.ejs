@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOCIAL APP</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon_logo.png" />
+  </head>
+  <body>
+    <%- include('./partials/header.ejs') %>
+
+    <main>
+      <% if (publicMemories[0].length > 0) { %>
+      <section class="feed-container">
+        <% publicMemories[0].forEach(memory => { %>
+        <div class="feed-post" data-memory-id="<%= memory.memory_id %>">
+          <div class="post-heading">
+            <% if(memory.profile_picture){%>
+            <a href="/profile/<%=memory.user_id%>">
+              <img src="data:image/jpeg;base64,<%= Buffer.from(memory.profile_picture)%>" alt="" />
+            </a>
+            <%} else{%>
+            <a href="/profile/<%=memory.user_id%>">
+              <img src="/images/default_profile_img.jpg" alt="" />
+            </a>
+            <%}%>
+            <a href="/profile/<%= memory.user_id %>">
+              <p class="post-username"><%= `${memory.first_name} ${memory.last_name}` %></p>
+            </a>
+          </div>
+          <div class="post-picture">
+            <a href="/memory/<%=memory.memory_id%>">
+              <img src="data:image/jpeg;base64,<%= Buffer.from(memory.picture)%>" alt="" />
+            </a>
+          </div>
+          <div class="post-description"><%=memory.memory_description %></div>
+          <div class="post-dates">
+            <p>Created at: <%= memory.memory_created_at %></p>
+            <p>Last edit at: <%=memory.memory_last_edit_at %></p>
+          </div>
+          <div class="post-interactions">
+            <button class="like-button" data-memory-id="<%= memory.memory_id %>">Like (<%= memory.likes_count || 0 %>)</button>
+            <button class="comment-button" data-memory-id="<%= memory.memory_id %>">Comment (<%= memory.comments_count || 0 %>)</button>
+                      </div>
+        </div>
+        <% }); %>
+      </section>
+
+      <div class="pagination">
+        <% if (currentPage > 1) { %>
+        <a href="/feed?page=<%= currentPage - 1 %>" class="pagination-button">&lt;</a>
+        <% } %>
+
+        <span class="pagination-current">Page <%= currentPage %></span>
+
+        <% if (publicMemories[0].length === 10) { %>
+        <a href="/feed?page=<%= currentPage + 1 %>" class="pagination-button">&gt;</a>
+        <% } %>
+      </div>
+      <% } else { %>
+      <p>No memories.</p>
+      <% } %>
+    </main>
+    <script src="/js/navDropdown.js"></script>
+    <script>
+      // public/js/feedInteractions.js
+document.addEventListener('DOMContentLoaded', () => {
+  const likeButtons = document.querySelectorAll('.like-button');
+  const commentButtons = document.querySelectorAll('.comment-button');
+
+  likeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const memoryId = button.getAttribute('data-memory-id');
+      const likeCountElement = button;
+
+      // Get the current like count from the button text
+      let currentCount = parseInt(likeCountElement.textContent.match(/\d+/)[0], 10);
+
+      // Increment the like count
+      currentCount += 1;
+
+      // Update the button text with the new like count
+      likeCountElement.textContent = `Like (${currentCount})`;
+    });
+  });
+
+  commentButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const memoryId = button.getAttribute('data-memory-id');
+      const commentCountElement = button;
+
+      // Get the current comment count from the button text
+      let currentCount = parseInt(commentCountElement.textContent.match(/\d+/)[0], 10);
+
+      // Increment the comment count (for demonstration, you might want to redirect or show a comment form)
+      currentCount += 1;
+
+      // Update the button text with the new comment count
+      commentCountElement.textContent = `Comment (${currentCount})`;
+
+      // For demonstration purposes, you can show an alert or redirect
+      // alert(`Memory ID ${memoryId} clicked for comments`);
+    });
+  });
+});
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SOCIAL APP</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="icon" href="/images/favicon_logo.png" />
+  </head>
+  <body>
+    <header>
+      <a href="/feed" class="header-logo">SOCIAL APP</a>
+    </header>
+
+    <main>
+      <section class="form-container">
+        <form action="/register" method="POST">
+          <h2>Sign Up</h2>
+          <br />
+          <br />
+          <br />
+
+          <div class="full-name-container">
+            <div class="first-name-container">
+              <input
+                type="text"
+                name="firstname"
+                id="first-name-input"
+                placeholder="First Name"
+                required
+              />
+              <div class="error-message-div">
+                <% if (errors && errors.firstname) { %>
+                <p class="error-message"><%= errors.firstname.msg %></p>
+                <% } %>
+              </div>
+            </div>
+            <div class="last-name-container">
+              <input
+                type="text"
+                name="lastname"
+                id="last-name-input"
+                placeholder="Last Name"
+                required
+              />
+              <div class="error-message-div">
+                <% if (errors && errors.lastname) { %>
+                <p class="error-message"><%= errors.lastname.msg %></p>
+                <% } %>
+              </div>
+            </div>
+          </div>
+
+          <div class="dob-and-gender-container">
+            <input
+              type="date"
+              name="dob"
+              id="dob-input"
+              placeholder="Date of Birth"
+              required
+            />
+            <select name="gender" id="gender-select">
+              <option value="" disabled selected>Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
+          <input
+            type="email"
+            name="email"
+            id="registration-email-input"
+            placeholder="Email"
+            required
+          />
+          <div class="error-message-div">
+            <% if (errors && errors.email) { %>
+            <p class="error-message"><%= errors.email.msg %></p>
+            <% } %> <% if(emailExists) {%>
+            <p class="error-message">Email already in use</p>
+            <%}%>
+          </div>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+          <div class="error-message-div">
+            <% if (errors && errors.password) { %>
+            <p class="error-message"><%= errors.password.msg %></p>
+            <% } %>
+          </div>
+
+          <button id="sign-up-button">SIGN UP</button>
+          <br />
+          <br />
+          <br />
+          <p class="form-bottom-message">
+            Already have an account? <a href="/">Login.</a>
+          </p>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
